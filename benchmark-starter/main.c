@@ -15,12 +15,17 @@ void *threadB2Function(void *arg) {
     return NULL;
 }
 
-int main() {
+int main(int argc, char **argv) {
     int threadsB1Count, threadsB2Count;
-    fprintf(stdout, "Enter count of thread for benchmark-1: ");
-    fscanf(stdin, "%d", &threadsB1Count);
-    fprintf(stdout, "Enter count of thread for benchmark-2: ");
-    fscanf(stdin, "%d", &threadsB2Count);
+    if (argc != 3) {
+        fprintf(stdout, "Enter count of thread for benchmark-1: ");
+        fscanf(stdin, "%d", &threadsB1Count);
+        fprintf(stdout, "Enter count of thread for benchmark-2: ");
+        fscanf(stdin, "%d", &threadsB2Count);
+    } else {
+        threadsB1Count = atoi(argv[1]);
+        threadsB2Count = atoi(argv[2]);
+    }
 
     pthread_t *threadsB1 = malloc(threadsB1Count * sizeof(pthread_t));
     pthread_t *threadsB2 = malloc(threadsB2Count * sizeof(pthread_t));
