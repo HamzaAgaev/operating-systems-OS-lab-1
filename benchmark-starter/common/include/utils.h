@@ -1,0 +1,13 @@
+#ifndef OS_LAB_1_UTILS_H
+#define OS_LAB_1_UTILS_H
+
+#define INPUT_FILENAME "input.txt"
+#define TEMP_FILENAME_FORMAT "%s-temp-%d.txt"
+#define OUTPUT_FILENAME_FORMAT "%s-output.txt"
+
+#define GEN_STR_LEN 4
+#define MAX_FILENAME_LEN 20
+
+void generateRandomString(char *str, int length);
+
+#endif // OS_LAB_1_UTILS_H
