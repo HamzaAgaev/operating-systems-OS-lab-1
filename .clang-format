@@ -1,0 +1,20 @@
+---
+Language: Cpp
+IndentWidth: 4
+
+ColumnLimit: 120
+AccessModifierOffset: -2
+
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+DerivePointerAlignment: false
+BreakConstructorInitializers: BeforeComma
+AlignAfterOpenBracket: BlockIndent
+
+BinPackArguments: false
+BinPackParameters: false
+
+AlignArrayOfStructures: Right
+SpaceAfterCStyleCast: true
