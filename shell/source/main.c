@@ -3,8 +3,12 @@
 
 #include "exec.h"
 
+#define DEFAULT_TEXT_SIZE 40
 #define MAX_ARGS 100
 #define MAX_COMMAND_LENGTH 100
+
+#define GREEN_TEXT(buffer, text) snprintf(buffer, sizeof(buffer), "\033[31m%s\033[0m\n", text)
+#define RED_TEXT(buffer, text) snprintf(buffer, sizeof(buffer), "\033[32m%s\033[0m\n", text)
 
 void printNewLine() {
     fprintf(stdout, "\n");
@@ -12,8 +16,10 @@ void printNewLine() {
 
 int main() {
     const char inputTextFormat[] = "shell >> ";
-    const char execTextFormat[] = "\033[32mExec time: %f\033[0m\n";
-    const char errorTextFormat[] = "\033[31mError code: %d\033[0m\n";
+    char execTextFormat[DEFAULT_TEXT_SIZE];
+    RED_TEXT(execTextFormat, "Exec time: %f");
+    char errorTextFormat[DEFAULT_TEXT_SIZE];
+    GREEN_TEXT(errorTextFormat, "Error code: %d");
     const char exitText[] = "exit";
     const char delimiter[] = " ";
     char entered_command[MAX_COMMAND_LENGTH];
@@ -22,7 +28,7 @@ int main() {
         if (fgets(entered_command, MAX_COMMAND_LENGTH, stdin) == NULL) {
             break;
         }
-        size_t len = strlen(entered_command);
+        const size_t len = strlen(entered_command);
         if (len > 0 && entered_command[len - 1] == '\n') {
             entered_command[len - 1] = '\0';
         }
@@ -38,12 +44,12 @@ int main() {
             break;
         }
         command_args[args_count + 1] = NULL;
-        ExecResult result = ExecCommand(command_args);
-        fprintf(stdout, execTextFormat, result.execTimeInSec);
+        const ExecResult result = execCommand(command_args);
+        fprintf(stdout, execTextFormat, result.execTimeInSeconds);
         if (result.statusCode != 0) {
             fprintf(stdout, errorTextFormat, result.statusCode);
         }
         printNewLine();
-    } while (1);
+    } while (true);
     return 0;
 }

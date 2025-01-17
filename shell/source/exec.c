@@ -7,15 +7,15 @@
 
 #define NANOSEC_IN_SEC 1e9
 
-ExecResult ExecCommand(char *args[]) {
-    pid_t pid = vfork();
-    ExecResult result = {.execTimeInSec = 0, .statusCode = 0};
+ExecResult execCommand(char *args[]) {
+    const pid_t pid = vfork();
+    ExecResult result = {.execTimeInSeconds = 0, .statusCode = 0};
     if (pid <= -1) {
         result.statusCode = errno;
-        result.execTimeInSec = 0;
+        result.execTimeInSeconds = 0;
     } else if (pid == 0) {
-        int exec_code = execvp(args[0], args);
-        int error_code = exec_code == 0 ? 0 : errno;
+        const int exec_code = execvp(args[0], args);
+        const int error_code = exec_code == 0 ? 0 : errno;
         _exit(error_code);
     } else {
         struct timespec start;
@@ -31,9 +31,9 @@ ExecResult ExecCommand(char *args[]) {
         } else {
             result.statusCode = 0;
         }
-        double exec_time_in_sec =
+        const double exec_time_in_sec =
                 (double) (end.tv_sec - start.tv_sec) + ((double) (end.tv_nsec - start.tv_nsec) / NANOSEC_IN_SEC);
-        result.execTimeInSec = exec_time_in_sec;
+        result.execTimeInSeconds = exec_time_in_sec;
     }
     return result;
 }
