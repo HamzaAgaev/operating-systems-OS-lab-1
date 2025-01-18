@@ -31,5 +31,5 @@ if __name__ == "__main__":
     elif benchmark == "benchmark-2":
         is_success = check_is_dedup_file(outputFile)
     if not is_success:
-        raise Exception(f"{benchmark} has wrong results.")
+        raise Exception(f"{benchmark} отрабатывает неправильно.")
     print("Done!")
