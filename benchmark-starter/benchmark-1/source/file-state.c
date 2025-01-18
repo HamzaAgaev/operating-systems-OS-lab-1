@@ -1,11 +1,14 @@
 #include "file-state.h"
+#include <errno.h>
 
-void initializeFileState(FileState *fileState, const char *filename) {
+void initializeFileState(FileState *fileState, const char *filename, ErrorCatcher *catcher) {
     fileState->file = fopen(filename, "rb");
-    fileState->isEndOfFile = false;
-    if (fscanf(fileState->file, "%d", &fileState->value) != 1) {
-        fileState->isEndOfFile = true;
+    if (fileState->file == NULL) {
+        catcher->statusCode = errno;
+        return;
     }
+    fileState->isEndOfFile = false;
+    updateFileState(fileState);
 }
 
 void updateFileState(FileState *fileState) {

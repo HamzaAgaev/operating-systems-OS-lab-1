@@ -1,6 +1,7 @@
 #ifndef OS_LAB_1_FILE_STATE_H
 #define OS_LAB_1_FILE_STATE_H
 
+#include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -10,7 +11,7 @@ typedef struct {
     bool isEndOfFile;
 } FileState;
 
-void initializeFileState(FileState *fileState, const char *filename);
+void initializeFileState(FileState *fileState, const char *filename, ErrorCatcher *catcher);
 
 void updateFileState(FileState *fileState);
 

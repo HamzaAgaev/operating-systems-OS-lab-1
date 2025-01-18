@@ -1,55 +1,66 @@
 #include "benchmark-1.h"
+#include "file-state.h"
+#include "heap-lib.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "file-state.h"
-#include "heap-lib.h"
-#include "utils.h"
-
-#define MEMORY_COEFFICIENT 16
-
-static int compare(const void *a, const void *b) {
-    return (*(int *) a - *(int *) b);
-}
+#define BLOCK_SCALE 16
 
 static int ceilDiv(int a, int b) {
     return a / b + (a % b != 0);
 }
 
-void benchmark1() {
+static int getNel(int i, int blockSize, int numbersCount) {
+    if ((i + 1) % blockSize == 0) {
+        return blockSize;
+    }
+    return numbersCount % blockSize;
+}
+
+RunResult benchmark1() {
     FILE *inputFile;
     FILE *outputFile;
     inputFile = fopen(INPUT_FILENAME, "r");
+    if (inputFile == NULL) {
+        return (RunResult) {"Can't open input file.", errno};
+    }
 
     int numbersCount;
     fscanf(inputFile, "%d", &numbersCount);
 
-    int blockSize = numbersCount / MEMORY_COEFFICIENT;
-    int *block = (int *) malloc(blockSize * sizeof(int));
+    const int blockSize = numbersCount / BLOCK_SCALE;
+    int *const block = (int *) malloc(blockSize * sizeof(int));
+    if (block == NULL) {
+        fclose(inputFile);
+        return (RunResult) {"Can't allocate memory.", errno};
+    }
 
-    int filesCount = ceilDiv(numbersCount, blockSize);
-    char fileNames[filesCount][MAX_FILENAME_LEN];
-
+    const int filesCount = ceilDiv(numbersCount, blockSize);
+    char **fileNames = malloc(filesCount * sizeof(char *)); //[filesCount][MAX_FILENAME_LEN]
+    if (fileNames == NULL) {
+        return (RunResult) {"Can't allocate memory.", errno};
+    }
     char fileNamePrefix[GEN_STR_LEN + 1];
-    generateRandomString(fileNamePrefix, GEN_STR_LEN + 1);
+    generateRandomString(fileNamePrefix, GEN_STR_LEN + 1, DEFAULT_SEED);
 
     for (int i = 0; i < numbersCount; i++) {
         fscanf(inputFile, "%d", &block[i % blockSize]);
         if ((i != 0 && (i + 1) % blockSize == 0) || i == numbersCount - 1) {
             char tempFileName[MAX_FILENAME_LEN];
-            int fileIndex = ceilDiv((i + 1), blockSize) - 1;
+            const int fileIndex = ceilDiv((i + 1), blockSize) - 1;
+            fileNames[fileIndex] = malloc(MAX_FILENAME_LEN * sizeof(char));
             snprintf(tempFileName, sizeof(tempFileName), TEMP_FILENAME_FORMAT, fileNamePrefix, fileIndex);
             memcpy(fileNames[fileIndex], tempFileName, sizeof(tempFileName));
             FILE *tempFile = fopen(tempFileName, "w");
-
-            int nel;
-            if ((i + 1) % blockSize == 0) {
-                nel = blockSize;
-            } else {
-                nel = numbersCount % blockSize;
+            if (tempFile == NULL) {
+                fclose(inputFile);
+                free(block);
+                return (RunResult) {"Can't open temp file.", errno};
             }
+            const int nel = getNel(i, blockSize, numbersCount);
             qsort(block, nel, sizeof(int), compare);
             for (int j = 0; j < nel; j++) {
                 fprintf(tempFile, "%d ", block[j]);
@@ -61,29 +72,79 @@ void benchmark1() {
     fclose(inputFile);
 
     FileState fileStates[filesCount];
+    ErrorCatcher catcher = {SUCCESS_CODE};
 
     for (int i = 0; i < filesCount; i++) {
-        initializeFileState(&fileStates[i], fileNames[i]);
+        initializeFileState(&fileStates[i], fileNames[i], &catcher);
+        if (catcher.statusCode != SUCCESS_CODE) {
+            for (int j = 0; j < i; j++) {
+                closeFileState(&fileStates[j]);
+                remove(fileNames[j]);
+            }
+            return (RunResult) {"Can't initialize File States.", catcher.statusCode};
+        }
     }
 
-    PriorityQueue *pq = newPriorityQueue(filesCount);
+    PriorityQueue *const pq = newPriorityQueue(filesCount, &catcher);
+    if (catcher.statusCode != SUCCESS_CODE) {
+        for (int i = 0; i < filesCount; i++) {
+            closeFileState(&fileStates[i]);
+            remove(fileNames[i]);
+        }
+        return (RunResult) {"Can't create Priority Queue.", catcher.statusCode};
+    }
+
     for (int i = 0; i < filesCount; i++) {
         if (!fileStates[i].isEndOfFile) {
-            offer(pq, fileStates[i]);
+            offer(pq, fileStates[i], &catcher);
+            if (catcher.statusCode != SUCCESS_CODE) {
+                for (int j = 0; j < filesCount; j++) {
+                    closeFileState(&fileStates[j]);
+                    remove(fileNames[j]);
+                }
+                freePriorityQueue(pq);
+                return (RunResult) {"Can't offer element to Priority Queue.", catcher.statusCode};
+            }
         }
     }
 
     char outputFileName[MAX_FILENAME_LEN];
     snprintf(outputFileName, sizeof(outputFileName), OUTPUT_FILENAME_FORMAT, fileNamePrefix);
     outputFile = fopen(outputFileName, "w");
+    if (outputFile == NULL) {
+        for (int i = 0; i < filesCount; i++) {
+            closeFileState(&fileStates[i]);
+            remove(fileNames[i]);
+        }
+        freePriorityQueue(pq);
+        return (RunResult) {"Can't open output file.", errno};
+    }
     fprintf(outputFile, "%d\n", numbersCount);
 
     while (!isEmpty(pq)) {
-        FileState fileState = poll(pq);
+        FileState fileState = poll(pq, &catcher);
+        if (catcher.statusCode != SUCCESS_CODE) {
+            for (int i = 0; i < filesCount; i++) {
+                closeFileState(&fileStates[i]);
+                remove(fileNames[i]);
+            }
+            freePriorityQueue(pq);
+            fclose(outputFile);
+            return (RunResult) {"Can't poll element from Priority Queue.", catcher.statusCode};
+        }
         fprintf(outputFile, "%d ", fileState.value);
         updateFileState(&fileState);
         if (!fileState.isEndOfFile) {
-            offer(pq, fileState);
+            offer(pq, fileState, &catcher);
+            if (catcher.statusCode != SUCCESS_CODE) {
+                for (int i = 0; i < filesCount; i++) {
+                    closeFileState(&fileStates[i]);
+                    remove(fileNames[i]);
+                }
+                freePriorityQueue(pq);
+                fclose(outputFile);
+                return (RunResult) {"Can't offer element to Priority Queue.", catcher.statusCode};
+            }
         }
     }
 
@@ -93,4 +154,6 @@ void benchmark1() {
     }
     freePriorityQueue(pq);
     fclose(outputFile);
+
+    return (RunResult) {"Success!", SUCCESS_CODE};
 }

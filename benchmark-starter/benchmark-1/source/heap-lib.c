@@ -1,25 +1,39 @@
 #include "heap-lib.h"
-
 #include <stdlib.h>
+#include <errno.h>
 
-#define PARENT(i) ((i - 1) / 2)
-#define LEFT(i) (2 * i + 1)
-#define RIGHT(i) (2 * i + 2)
+#define SWAP(a, b, type)                                                                                               \
+    type temp = *(a);                                                                                                  \
+    *(a) = *(b);                                                                                                       \
+    *(b) = temp;
 
-static void resize(PriorityQueue *pq) {
+int parentIndex(int i) {
+    return (i - 1) / 2;
+}
+
+int leftIndex(int i) {
+    return 2 * i + 1;
+}
+
+int rightIndex(int i) {
+    return 2 * i + 2;
+}
+
+static void resize(PriorityQueue *pq, ErrorCatcher *catcher) {
     pq->capacity *= 2;
     pq->data = (FileState *) realloc(pq->data, pq->capacity * sizeof(FileState));
+    if (pq->data == NULL) {
+        catcher->statusCode = errno;
+    }
 }
 
-static void swap(FileState *a, FileState *b) {
-    FileState temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-PriorityQueue *newPriorityQueue(int capacity) {
+PriorityQueue *newPriorityQueue(int capacity, ErrorCatcher *catcher) {
     PriorityQueue *pq = (PriorityQueue *) malloc(sizeof(PriorityQueue));
     pq->data = (FileState *) malloc(capacity * sizeof(FileState));
+    if (pq == NULL || pq->data == NULL) {
+        catcher->statusCode = errno;
+        return pq;
+    }
     pq->size = 0;
     pq->capacity = capacity;
     return pq;
@@ -34,37 +48,46 @@ bool isEmpty(PriorityQueue *pq) {
     return pq->size == 0;
 }
 
-void offer(PriorityQueue *pq, FileState value) {
+void offer(PriorityQueue *pq, FileState value, ErrorCatcher *catcher) {
     if (pq->size == pq->capacity) {
-        resize(pq);
+        resize(pq, catcher);
+    }
+    if (catcher->statusCode != SUCCESS_CODE) {
+        return;
     }
     pq->data[pq->size] = value;
     int i = pq->size;
     pq->size++;
 
     // heapify
-    while (i != 0 && pq->data[PARENT(i)].value > pq->data[i].value) {
-        swap(&pq->data[PARENT(i)], &pq->data[i]);
-        i = PARENT(i);
+    while (i != 0 && pq->data[parentIndex(i)].value > pq->data[i].value) {
+        SWAP(&pq->data[parentIndex(i)], &pq->data[i], FileState);
+        i = parentIndex(i);
     }
 }
 
-FileState peek(PriorityQueue *pq) {
-    // no isEmpty(pq) check
+FileState peek(PriorityQueue *pq, ErrorCatcher *catcher) {
+    if (isEmpty(pq)) {
+        catcher->statusCode = DEFAULT_ERROR_CODE;
+        return (FileState) {NULL, 0, true};
+    }
     return pq->data[0];
 }
 
-FileState poll(PriorityQueue *pq) {
-    // no isEmpty(pq) check
+FileState poll(PriorityQueue *pq, ErrorCatcher *catcher) {
+    if (isEmpty(pq)) {
+        catcher->statusCode = DEFAULT_ERROR_CODE;
+        return (FileState) {NULL, 0, true};
+    }
     FileState root = pq->data[0];
     pq->data[0] = pq->data[pq->size - 1];
     pq->size--;
 
     // heapify
     int i = 0;
-    while (true) {
-        int left = LEFT(i);
-        int right = RIGHT(i);
+    for (;;) {
+        const int left = leftIndex(i);
+        const int right = rightIndex(i);
         int smallest = i;
 
         if (left < pq->size && pq->data[left].value < pq->data[smallest].value) {
@@ -76,7 +99,7 @@ FileState poll(PriorityQueue *pq) {
         if (smallest == i) {
             break;
         }
-        swap(&pq->data[i], &pq->data[smallest]);
+        SWAP(&pq->data[i], &pq->data[smallest], FileState);
         i = smallest;
     }
 
