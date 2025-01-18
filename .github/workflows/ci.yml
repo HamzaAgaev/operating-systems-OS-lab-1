@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Clang and CMake
+      - name: Install Clang, CMake and Python
         run: |
           sudo apt update
           sudo apt install -y clang clang-tidy clang-format cmake python3
