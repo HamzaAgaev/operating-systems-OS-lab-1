@@ -1,7 +1,7 @@
+#include <libc.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <libc.h>
 
 #define MODE_NAME_LEN 10
 
@@ -40,14 +40,16 @@ static void startBenchmarksUsingThreads(int threadsB1Count, int threadsB2Count) 
 
     for (int i = 0; i < threadsB1Count; i++) {
         pthread_join(threadsB1[i], (void **) &resultsB1[i]);
-        printf("B1Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB1[i]->message,
-               strerror(resultsB1[i]->statusCode));
+        printf(
+            "B1Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB1[i]->message, strerror(resultsB1[i]->statusCode)
+        );
         free(resultsB1[i]);
     }
     for (int i = 0; i < threadsB2Count; i++) {
         pthread_join(threadsB2[i], (void **) &resultsB2[i]);
-        printf("B2Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB2[i]->message,
-               strerror(resultsB2[i]->statusCode));
+        printf(
+            "B2Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB2[i]->message, strerror(resultsB2[i]->statusCode)
+        );
         free(resultsB2[i]);
     }
     free(resultsB1);

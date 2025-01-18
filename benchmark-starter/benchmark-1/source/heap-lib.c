@@ -1,6 +1,6 @@
 #include "heap-lib.h"
-#include <stdlib.h>
 #include <errno.h>
+#include <stdlib.h>
 
 #define SWAP(a, b, type)                                                                                               \
     type temp = *(a);                                                                                                  \

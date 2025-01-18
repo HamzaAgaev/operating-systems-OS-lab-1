@@ -1,8 +1,8 @@
 #include "benchmark-2.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 
 RunResult benchmark2() {
     FILE *inputFile;
