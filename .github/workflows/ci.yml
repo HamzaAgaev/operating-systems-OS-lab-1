@@ -37,10 +37,10 @@ jobs:
 
       - name: Test benchmark-1
         run: |
-          ./build/benchmark-starter/benchmark-starter 1 0
-          python3 benchmarkChecker.py benchmark-1 ./build/benchmark-starter/*output.txt
+          ./build/benchmark-starter/benchmark-starter processes 1 0
+          python3 benchmarkChecker.py benchmark-1 "./build/benchmark-starter/*output.txt"
 
       - name: Test benchmark-2
         run: |
-          ./build/benchmark-starter/benchmark-starter 0 1
-          python3 benchmarkChecker.py benchmark-2 ./build/benchmark-starter/*output.txt
+          ./build/benchmark-starter/benchmark-starter threads 0 1
+          python3 benchmarkChecker.py benchmark-2 "./build/benchmark-starter/*output.txt"
