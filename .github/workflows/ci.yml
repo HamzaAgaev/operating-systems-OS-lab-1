@@ -1,0 +1,32 @@
+name: Check Lab-1 with linter, formatter and tests
+
+on: [push, pull_request]
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Clang and CMake
+        run: |
+          sudo apt update
+          sudo apt install -y clang clang-tidy clang-format cmake
+
+      - name: Run clang-format
+        run: |
+          find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format --dry-run --Werror {} +
+#         run "find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -i {} +" to format code
+
+      - name: Run clang-tidy
+        run: |
+          mkdir build
+          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Bbuild -H.
+          clang-tidy $(find . -name "*.c") -- -p build
+
+      - name: Configure and build with CMake
+        run: |
+          cmake -Bbuild -H.
+          cmake --build build
