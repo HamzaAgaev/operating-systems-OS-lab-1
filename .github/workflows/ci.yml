@@ -1,4 +1,4 @@
-name: Check Lab-1 with linter, formatter and tests
+name: Check Lab-1 with linter, formatter and run tests for benchmarks
 
 on: [push, pull_request]
 
@@ -13,7 +13,7 @@ jobs:
       - name: Install Clang and CMake
         run: |
           sudo apt update
-          sudo apt install -y clang clang-tidy clang-format cmake
+          sudo apt install -y clang clang-tidy clang-format cmake python3
 
       - name: Run clang-format
         run: |
@@ -30,3 +30,17 @@ jobs:
         run: |
           cmake -Bbuild -H.
           cmake --build build
+
+      - name: Generate input file
+        run: |
+          python3 inputGenerator.py ./build/benchmark-starter/input.txt
+
+      - name: Test benchmark-1
+        run: |
+          ./build/benchmark-starter/benchmark-starter 1 0
+          python3 benchmarkChecker.py benchmark-1 ./build/benchmark-starter/*output.txt
+
+      - name: Test benchmark-2
+        run: |
+          ./build/benchmark-starter/benchmark-starter 0 1
+          python3 benchmarkChecker.py benchmark-2 ./build/benchmark-starter/*output.txt
