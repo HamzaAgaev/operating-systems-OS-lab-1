@@ -39,7 +39,7 @@ jobs:
       - name: Test benchmark-1
         run: |
           cd ./build/benchmark-starter/
-          ./build/benchmark-starter/benchmark-starter processes 1 0
+          ./benchmark-starter processes 1 0
           cd ../..
           python3 benchmarkChecker.py benchmark-1 "./build/benchmark-starter/*output.txt"
           python3 outputCleaner.py "./build/benchmark-starter/*output.txt"
@@ -47,7 +47,7 @@ jobs:
       - name: Test benchmark-2
         run: |
           cd ./build/benchmark-starter/
-          ./build/benchmark-starter/benchmark-starter threads 0 1
+          ./benchmark-starter threads 0 1
           cd ../..
           python3 benchmarkChecker.py benchmark-2 "./build/benchmark-starter/*output.txt"
           python3 outputCleaner.py "./build/benchmark-starter/*output.txt"
