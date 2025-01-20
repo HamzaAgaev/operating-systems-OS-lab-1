@@ -24,7 +24,7 @@ jobs:
         run: |
           mkdir build
           cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Bbuild -H.
-          clang-tidy $(find . -name "*.c") -- -p build
+          clang-tidy $(find . -name "*.c") --quiet -- -std=23 -p build -header-filter='^$'
 
       - name: Configure and build with CMake
         run: |
