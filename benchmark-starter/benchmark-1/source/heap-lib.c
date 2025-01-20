@@ -69,7 +69,7 @@ void offer(PriorityQueue *pq, FileState value, ErrorCatcher *catcher) {
 FileState peek(PriorityQueue *pq, ErrorCatcher *catcher) {
     if (isEmpty(pq)) {
         catcher->statusCode = DEFAULT_ERROR_CODE;
-        return (FileState){NULL, 0, true};
+        return (FileState) {NULL, 0, true};
     }
     return pq->data[0];
 }
@@ -77,7 +77,7 @@ FileState peek(PriorityQueue *pq, ErrorCatcher *catcher) {
 FileState poll(PriorityQueue *pq, ErrorCatcher *catcher) {
     if (isEmpty(pq)) {
         catcher->statusCode = DEFAULT_ERROR_CODE;
-        return (FileState){NULL, 0, true};
+        return (FileState) {NULL, 0, true};
     }
     FileState root = pq->data[0];
     pq->data[0] = pq->data[pq->size - 1];
