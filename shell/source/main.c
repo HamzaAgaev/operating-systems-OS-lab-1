@@ -15,6 +15,7 @@ void printNewLine() {
 }
 
 int main() {
+    setSignalHandling();
     const char inputTextFormat[] = "shell >> ";
     char execTextFormat[DEFAULT_TEXT_SIZE];
     RED_TEXT(execTextFormat, "Exec time: %f");
