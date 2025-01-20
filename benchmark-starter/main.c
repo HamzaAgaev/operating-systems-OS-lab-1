@@ -106,8 +106,8 @@ int main(int argc, char **argv) {
         fscanf(stdin, "%d", &entitiesB2Count);
     } else {
         memcpy(mode, argv[1], MODE_NAME_LEN);
-        entitiesB1Count = atoi(argv[1]);
-        entitiesB2Count = atoi(argv[2]);
+        entitiesB1Count = atoi(argv[2]);
+        entitiesB2Count = atoi(argv[3]);
     }
     if (strcmp(mode, "threads") == 0) {
         startBenchmarksUsingThreads(entitiesB1Count, entitiesB2Count);
