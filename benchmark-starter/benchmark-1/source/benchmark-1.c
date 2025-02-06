@@ -41,6 +41,8 @@ RunResult benchmark1() {
     const int filesCount = ceilDiv(numbersCount, blockSize);
     char **fileNames = malloc(filesCount * sizeof(char *)); //[filesCount][MAX_FILENAME_LEN]
     if (fileNames == NULL) {
+        fclose(inputFile);
+        free(block);
         return (RunResult){"Can't allocate memory.", errno};
     }
     char fileNamePrefix[GEN_STR_LEN + 1];
@@ -52,10 +54,21 @@ RunResult benchmark1() {
             char tempFileName[MAX_FILENAME_LEN];
             const int fileIndex = ceilDiv((i + 1), blockSize) - 1;
             fileNames[fileIndex] = malloc(MAX_FILENAME_LEN * sizeof(char));
+            if (fileNames[fileIndex] == NULL) {
+                for (int j = 0; j < fileIndex; j++) {
+                    free(fileNames[j]);
+                }
+                fclose(inputFile);
+                free(block);
+                return (RunResult){"Can't allocate memory.", errno};
+            }
             snprintf(tempFileName, sizeof(tempFileName), TEMP_FILENAME_FORMAT, fileNamePrefix, fileIndex);
             memcpy(fileNames[fileIndex], tempFileName, sizeof(tempFileName));
             FILE *tempFile = fopen(tempFileName, "w");
             if (tempFile == NULL) {
+                for (int j = 0; j < fileIndex + 1; j++) {
+                    free(fileNames[j]);
+                }
                 fclose(inputFile);
                 free(block);
                 return (RunResult){"Can't open temp file.", errno};
@@ -80,6 +93,7 @@ RunResult benchmark1() {
             for (int j = 0; j < i; j++) {
                 closeFileState(&fileStates[j]);
                 remove(fileNames[j]);
+                free(fileNames[j]);
             }
             return (RunResult){"Can't initialize File States.", catcher.statusCode};
         }
@@ -90,6 +104,7 @@ RunResult benchmark1() {
         for (int i = 0; i < filesCount; i++) {
             closeFileState(&fileStates[i]);
             remove(fileNames[i]);
+            free(fileNames[i]);
         }
         return (RunResult){"Can't create Priority Queue.", catcher.statusCode};
     }
@@ -101,6 +116,7 @@ RunResult benchmark1() {
                 for (int j = 0; j < filesCount; j++) {
                     closeFileState(&fileStates[j]);
                     remove(fileNames[j]);
+                    free(fileNames[j]);
                 }
                 freePriorityQueue(pq);
                 return (RunResult){"Can't offer element to Priority Queue.", catcher.statusCode};
@@ -115,6 +131,7 @@ RunResult benchmark1() {
         for (int i = 0; i < filesCount; i++) {
             closeFileState(&fileStates[i]);
             remove(fileNames[i]);
+            free(fileNames[i]);
         }
         freePriorityQueue(pq);
         return (RunResult){"Can't open output file.", errno};
@@ -127,6 +144,7 @@ RunResult benchmark1() {
             for (int i = 0; i < filesCount; i++) {
                 closeFileState(&fileStates[i]);
                 remove(fileNames[i]);
+                free(fileNames[i]);
             }
             freePriorityQueue(pq);
             fclose(outputFile);
@@ -140,6 +158,7 @@ RunResult benchmark1() {
                 for (int i = 0; i < filesCount; i++) {
                     closeFileState(&fileStates[i]);
                     remove(fileNames[i]);
+                    free(fileNames[i]);
                 }
                 freePriorityQueue(pq);
                 fclose(outputFile);
@@ -151,6 +170,7 @@ RunResult benchmark1() {
     for (int i = 0; i < filesCount; i++) {
         closeFileState(&fileStates[i]);
         remove(fileNames[i]);
+        free(fileNames[i]);
     }
     freePriorityQueue(pq);
     fclose(outputFile);
