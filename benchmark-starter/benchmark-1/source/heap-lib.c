@@ -29,8 +29,12 @@ static void resize(PriorityQueue *pq, ErrorCatcher *catcher) {
 
 PriorityQueue *newPriorityQueue(int capacity, ErrorCatcher *catcher) {
     PriorityQueue *pq = (PriorityQueue *) malloc(sizeof(PriorityQueue));
+    if (pq == NULL) {
+        catcher->statusCode = errno;
+        return pq;
+    }
     pq->data = (FileState *) malloc(capacity * sizeof(FileState));
-    if (pq == NULL || pq->data == NULL) {
+    if (pq->data == NULL) {
         catcher->statusCode = errno;
         return pq;
     }
