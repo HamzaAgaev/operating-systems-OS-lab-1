@@ -5,3 +5,4 @@ set(CMAKE_C_STANDARD 23)
 
 add_subdirectory(shell)
 add_subdirectory(benchmark-starter)
+add_subdirectory(common)
