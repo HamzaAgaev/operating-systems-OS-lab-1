@@ -36,6 +36,7 @@ RunResult benchmark2() {
         fclose(inputFile);
         return (RunResult){"Can't open output file.", errno};
     }
+    fprintf(outputFile, "%d\n", numbersCount);
 
     for (int i = 0; i < numbersCount; i++) {
         if (i == 0 || inputNumbers[i] != inputNumbers[i - 1]) {

@@ -17,6 +17,7 @@ def check_is_sorted_file(file):
 
 
 def check_is_dedup_file(file):
+    numbers_count = file.readline()
     numbers = list(map(int, file.readline().split()))
     return Counter(numbers) == Counter(set(numbers))
 
