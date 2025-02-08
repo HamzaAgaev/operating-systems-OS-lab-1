@@ -31,7 +31,7 @@ RunResult benchmark1() {
     int numbersCount;
     fscanf(inputFile, "%d", &numbersCount);
 
-    const int blockSize = numbersCount / BLOCK_SCALE;
+    const int blockSize = (numbersCount / BLOCK_SCALE != 0) ? (numbersCount / BLOCK_SCALE) : numbersCount;
     int *const block = (int *) malloc(blockSize * sizeof(int));
     if (block == NULL) {
         fclose(inputFile);
