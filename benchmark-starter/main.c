@@ -63,11 +63,9 @@ static void startBenchmarksUsingThreads(int threadsB1Count, int threadsB2Count) 
 }
 
 static void startBenchmark(RunResult (*benchmark)(void), int i, char *bName) {
-    RunResult *result = (RunResult *) malloc(sizeof(RunResult));
-    *result = benchmark();
-    printf("%sProcess[%d]: %s, statusCode = %s.\n", bName, i + 1, result->message, strerror(result->statusCode));
-    int statusCode = result->statusCode;
-    free(result);
+    RunResult result = benchmark();
+    printf("%sProcess[%d]: %s, statusCode = %s.\n", bName, i + 1, result.message, strerror(result.statusCode));
+    int statusCode = result.statusCode;
     exit(statusCode);
 }
 
