@@ -17,8 +17,8 @@ jobs:
 
       - name: Run clang-format
         run: |
-          find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format --dry-run --Werror {} +
-#         run "find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -i {} +" to format code
+          find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -style=file --dry-run --Werror {} +
+#         run "find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -style=file -i {} +" to format code
 
 #      - name: Run clang-tidy
 #        run: |
