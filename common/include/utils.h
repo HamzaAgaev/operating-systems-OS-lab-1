@@ -7,7 +7,7 @@
 
 #include <time.h>
 
-#define DEFAULT_SEED ((unsigned int) time(NULL))
+#define DEFAULT_SEED ((unsigned int)time(NULL))
 #define GEN_STR_LEN 4
 #define MAX_FILENAME_LEN 20
 

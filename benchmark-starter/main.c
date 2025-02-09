@@ -10,13 +10,13 @@
 #include "benchmark-2/include/benchmark-2.h"
 
 static void *threadB1Function(void *arg) {
-    RunResult *result = (RunResult *) malloc(sizeof(RunResult));
+    RunResult *result = (RunResult *)malloc(sizeof(RunResult));
     *result = benchmark1();
     pthread_exit(result);
 }
 
 static void *threadB2Function(void *arg) {
-    RunResult *result = (RunResult *) malloc(sizeof(RunResult));
+    RunResult *result = (RunResult *)malloc(sizeof(RunResult));
     *result = benchmark2();
     pthread_exit(result);
 }
@@ -40,13 +40,13 @@ static void startBenchmarksUsingThreads(int threadsB1Count, int threadsB2Count) 
     RunResult **resultsB2 = malloc(threadsB2Count * sizeof(RunResult *));
 
     for (int i = 0; i < threadsB1Count; i++) {
-        pthread_join(threadsB1[i], (void **) &resultsB1[i]);
+        pthread_join(threadsB1[i], (void **)&resultsB1[i]);
         printf(
                 "B1Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB1[i]->message, strerror(resultsB1[i]->statusCode));
         free(resultsB1[i]);
     }
     for (int i = 0; i < threadsB2Count; i++) {
-        pthread_join(threadsB2[i], (void **) &resultsB2[i]);
+        pthread_join(threadsB2[i], (void **)&resultsB2[i]);
         printf(
                 "B2Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB2[i]->message, strerror(resultsB2[i]->statusCode));
         free(resultsB2[i]);

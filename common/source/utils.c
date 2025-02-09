@@ -13,19 +13,19 @@ static void initializeRandom(unsigned int seed) {
 }
 
 void generateRandomString(char *str, int length, unsigned int seed) {
-    const unsigned long seedByThread = (unsigned long) pthread_self() ^ seed;
-    initializeRandom((unsigned int) seedByThread);
+    const unsigned long seedByThread = (unsigned long)pthread_self() ^ seed;
+    initializeRandom((unsigned int)seedByThread);
     const char start = 'a';
     const char end = 'z';
     const int range = end - start + 1;
 
     for (int i = 0; i < length - 1; i++) {
-        str[i] = (char) (start + (char) (rand() % range));
+        str[i] = (char)(start + (char)(rand() % range));
     }
 
     str[length - 1] = '\0';
 }
 
 int compare(const void *a, const void *b) {
-    return (*(int *) a - *(int *) b);
+    return (*(int *)a - *(int *)b);
 }
