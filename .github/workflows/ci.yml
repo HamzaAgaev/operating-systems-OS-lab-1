@@ -17,7 +17,9 @@ jobs:
 
       - name: Run clang-format
         run: |
-          find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -style="{BasedOnStyle: file, SpaceAfterCStyleCast: true}" --dry-run --Werror {} +
+          cat .clang-format
+          clang-format -style=file -dump-config
+#          find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -style="{BasedOnStyle: file, SpaceAfterCStyleCast: true}" --dry-run --Werror {} +
 #         run "find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -style="{BasedOnStyle: file, SpaceAfterCStyleCast: true}" -i {} +" to format code
 
 #      - name: Run clang-tidy
