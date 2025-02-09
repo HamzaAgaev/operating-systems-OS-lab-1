@@ -2,6 +2,7 @@
 #define OS_LAB_1_FILE_STATE_H
 
 #include "utils.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 

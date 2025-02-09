@@ -1,4 +1,5 @@
 #include "file-state.h"
+
 #include <errno.h>
 
 void initializeFileState(FileState *fileState, const char *filename, ErrorCatcher *catcher) {

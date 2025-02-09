@@ -1,3 +1,6 @@
+#include "benchmark-1/include/benchmark-1.h"
+#include "benchmark-2/include/benchmark-2.h"
+
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,9 +8,6 @@
 #include <unistd.h>
 
 #define MODE_NAME_LEN 10
-
-#include "benchmark-1/include/benchmark-1.h"
-#include "benchmark-2/include/benchmark-2.h"
 
 static void *threadB1Function(void *arg) {
     RunResult *result = (RunResult *)malloc(sizeof(RunResult));

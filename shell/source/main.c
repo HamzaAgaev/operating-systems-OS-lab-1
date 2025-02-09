@@ -1,7 +1,7 @@
+#include "exec.h"
+
 #include <stdio.h>
 #include <string.h>
-
-#include "exec.h"
 
 #define DEFAULT_TEXT_SIZE 40
 #define MAX_ARGS 100
