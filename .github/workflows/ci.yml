@@ -13,7 +13,7 @@ jobs:
       - name: Install Clang, CMake and Python
         run: |
           sudo apt update
-          sudo apt install -y clang clang-tidy clang-format cmake python3
+          sudo apt install -y clang-19 clang-tidy-19 clang-format-19 cmake python3
 
       - name: Run clang-format
         run: |
