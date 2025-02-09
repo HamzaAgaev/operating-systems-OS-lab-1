@@ -9,7 +9,7 @@ RunResult benchmark2() {
     FILE *outputFile;
     inputFile = fopen(INPUT_FILENAME, "r");
     if (inputFile == NULL) {
-        return (RunResult){"Can't open input file.", errno};
+        return (RunResult) {"Can't open input file.", errno};
     }
 
     int numbersCount;
@@ -18,7 +18,7 @@ RunResult benchmark2() {
     int *inputNumbers = (int *) malloc(numbersCount * sizeof(int));
     if (inputNumbers == NULL) {
         fclose(inputFile);
-        return (RunResult){"Can't allocate memory for numbers.", errno};
+        return (RunResult) {"Can't allocate memory for numbers.", errno};
     }
     for (int i = 0; i < numbersCount; i++) {
         fscanf(inputFile, "%d", &inputNumbers[i]);
@@ -34,7 +34,7 @@ RunResult benchmark2() {
     if (outputFile == NULL) {
         free(inputNumbers);
         fclose(inputFile);
-        return (RunResult){"Can't open output file.", errno};
+        return (RunResult) {"Can't open output file.", errno};
     }
     fprintf(outputFile, "%d\n", numbersCount);
 
@@ -46,5 +46,5 @@ RunResult benchmark2() {
     free(inputNumbers);
     fclose(inputFile);
     fclose(outputFile);
-    return (RunResult){"Success!", SUCCESS_CODE};
+    return (RunResult) {"Success!", SUCCESS_CODE};
 }

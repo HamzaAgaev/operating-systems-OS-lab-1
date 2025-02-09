@@ -25,7 +25,7 @@ RunResult benchmark1() {
     FILE *outputFile;
     inputFile = fopen(INPUT_FILENAME, "r");
     if (inputFile == NULL) {
-        return (RunResult){"Can't open input file.", errno};
+        return (RunResult) {"Can't open input file.", errno};
     }
 
     int numbersCount;
@@ -35,15 +35,15 @@ RunResult benchmark1() {
     int *const block = (int *) malloc(blockSize * sizeof(int));
     if (block == NULL) {
         fclose(inputFile);
-        return (RunResult){"Can't allocate memory.", errno};
+        return (RunResult) {"Can't allocate memory.", errno};
     }
 
     const int filesCount = ceilDiv(numbersCount, blockSize);
-    char **fileNames = malloc(filesCount * sizeof(char *)); //[filesCount][MAX_FILENAME_LEN]
+    char **fileNames = malloc(filesCount * sizeof(char *));//[filesCount][MAX_FILENAME_LEN]
     if (fileNames == NULL) {
         fclose(inputFile);
         free(block);
-        return (RunResult){"Can't allocate memory.", errno};
+        return (RunResult) {"Can't allocate memory.", errno};
     }
     char fileNamePrefix[GEN_STR_LEN + 1];
     generateRandomString(fileNamePrefix, GEN_STR_LEN + 1, DEFAULT_SEED);
@@ -61,7 +61,7 @@ RunResult benchmark1() {
                 fclose(inputFile);
                 free(block);
                 free(fileNames);
-                return (RunResult){"Can't allocate memory.", errno};
+                return (RunResult) {"Can't allocate memory.", errno};
             }
             snprintf(tempFileName, sizeof(tempFileName), TEMP_FILENAME_FORMAT, fileNamePrefix, fileIndex);
             memcpy(fileNames[fileIndex], tempFileName, sizeof(tempFileName));
@@ -73,7 +73,7 @@ RunResult benchmark1() {
                 fclose(inputFile);
                 free(block);
                 free(fileNames);
-                return (RunResult){"Can't open temp file.", errno};
+                return (RunResult) {"Can't open temp file.", errno};
             }
             const int nel = getNel(i, blockSize, numbersCount);
             qsort(block, nel, sizeof(int), compare);
@@ -98,7 +98,7 @@ RunResult benchmark1() {
                 free(fileNames[j]);
             }
             free(fileNames);
-            return (RunResult){"Can't initialize File States.", catcher.statusCode};
+            return (RunResult) {"Can't initialize File States.", catcher.statusCode};
         }
     }
 
@@ -110,7 +110,7 @@ RunResult benchmark1() {
             free(fileNames[i]);
         }
         free(fileNames);
-        return (RunResult){"Can't create Priority Queue.", catcher.statusCode};
+        return (RunResult) {"Can't create Priority Queue.", catcher.statusCode};
     }
 
     for (int i = 0; i < filesCount; i++) {
@@ -124,7 +124,7 @@ RunResult benchmark1() {
                 }
                 free(fileNames);
                 freePriorityQueue(pq);
-                return (RunResult){"Can't offer element to Priority Queue.", catcher.statusCode};
+                return (RunResult) {"Can't offer element to Priority Queue.", catcher.statusCode};
             }
         }
     }
@@ -140,7 +140,7 @@ RunResult benchmark1() {
         }
         free(fileNames);
         freePriorityQueue(pq);
-        return (RunResult){"Can't open output file.", errno};
+        return (RunResult) {"Can't open output file.", errno};
     }
     fprintf(outputFile, "%d\n", numbersCount);
 
@@ -155,7 +155,7 @@ RunResult benchmark1() {
             free(fileNames);
             freePriorityQueue(pq);
             fclose(outputFile);
-            return (RunResult){"Can't poll element from Priority Queue.", catcher.statusCode};
+            return (RunResult) {"Can't poll element from Priority Queue.", catcher.statusCode};
         }
         fprintf(outputFile, "%d ", fileState.value);
         updateFileState(&fileState);
@@ -170,7 +170,7 @@ RunResult benchmark1() {
                 free(fileNames);
                 freePriorityQueue(pq);
                 fclose(outputFile);
-                return (RunResult){"Can't offer element to Priority Queue.", catcher.statusCode};
+                return (RunResult) {"Can't offer element to Priority Queue.", catcher.statusCode};
             }
         }
     }
@@ -184,5 +184,5 @@ RunResult benchmark1() {
     freePriorityQueue(pq);
     fclose(outputFile);
 
-    return (RunResult){"Success!", SUCCESS_CODE};
+    return (RunResult) {"Success!", SUCCESS_CODE};
 }

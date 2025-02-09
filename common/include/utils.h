@@ -27,4 +27,4 @@ void generateRandomString(char *str, int length, unsigned int seed);
 
 int compare(const void *a, const void *b);
 
-#endif // OS_LAB_1_UTILS_H
+#endif// OS_LAB_1_UTILS_H

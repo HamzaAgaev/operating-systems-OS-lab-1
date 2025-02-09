@@ -2,9 +2,9 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#define SWAP(a, b, type)                                                                                               \
-    type temp = *(a);                                                                                                  \
-    *(a) = *(b);                                                                                                       \
+#define SWAP(a, b, type) \
+    type temp = *(a);    \
+    *(a) = *(b);         \
     *(b) = temp;
 
 int parentIndex(int i) {
@@ -73,7 +73,7 @@ void offer(PriorityQueue *pq, FileState value, ErrorCatcher *catcher) {
 FileState peek(PriorityQueue *pq, ErrorCatcher *catcher) {
     if (isEmpty(pq)) {
         catcher->statusCode = DEFAULT_ERROR_CODE;
-        return (FileState){NULL, 0, true};
+        return (FileState) {NULL, 0, true};
     }
     return pq->data[0];
 }
@@ -81,7 +81,7 @@ FileState peek(PriorityQueue *pq, ErrorCatcher *catcher) {
 FileState poll(PriorityQueue *pq, ErrorCatcher *catcher) {
     if (isEmpty(pq)) {
         catcher->statusCode = DEFAULT_ERROR_CODE;
-        return (FileState){NULL, 0, true};
+        return (FileState) {NULL, 0, true};
     }
     FileState root = pq->data[0];
     pq->data[0] = pq->data[pq->size - 1];

@@ -23,4 +23,4 @@ FileState peek(PriorityQueue *pq, ErrorCatcher *catcher);
 
 FileState poll(PriorityQueue *pq, ErrorCatcher *catcher);
 
-#endif // OS_LAB_1_HEAP_LIB_H
+#endif// OS_LAB_1_HEAP_LIB_H

@@ -17,4 +17,4 @@ void updateFileState(FileState *fileState);
 
 void closeFileState(FileState *fileState);
 
-#endif // OS_LAB_1_FILE_STATE_H
+#endif// OS_LAB_1_FILE_STATE_H

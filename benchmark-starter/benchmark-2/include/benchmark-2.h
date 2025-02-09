@@ -5,4 +5,4 @@
 
 RunResult benchmark2();
 
-#endif // OS_LAB_1_BENCHMARK_2_H
+#endif// OS_LAB_1_BENCHMARK_2_H

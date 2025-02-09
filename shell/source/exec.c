@@ -60,7 +60,7 @@ ExecResult execCommand(char *args[]) {
             kill(childPid, SIGKILL);
         }
         const double exec_time_in_sec =
-            (double) (end.tv_sec - start.tv_sec) + ((double) (end.tv_nsec - start.tv_nsec) / NANOSEC_IN_SEC);
+                (double) (end.tv_sec - start.tv_sec) + ((double) (end.tv_nsec - start.tv_nsec) / NANOSEC_IN_SEC);
         result.execTimeInSeconds = exec_time_in_sec;
     }
     resetChildPid();

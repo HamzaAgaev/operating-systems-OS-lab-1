@@ -42,15 +42,13 @@ static void startBenchmarksUsingThreads(int threadsB1Count, int threadsB2Count) 
     for (int i = 0; i < threadsB1Count; i++) {
         pthread_join(threadsB1[i], (void **) &resultsB1[i]);
         printf(
-            "B1Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB1[i]->message, strerror(resultsB1[i]->statusCode)
-        );
+                "B1Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB1[i]->message, strerror(resultsB1[i]->statusCode));
         free(resultsB1[i]);
     }
     for (int i = 0; i < threadsB2Count; i++) {
         pthread_join(threadsB2[i], (void **) &resultsB2[i]);
         printf(
-            "B2Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB2[i]->message, strerror(resultsB2[i]->statusCode)
-        );
+                "B2Thread[%d]: %s, statusCode = %s.\n", i + 1, resultsB2[i]->message, strerror(resultsB2[i]->statusCode));
         free(resultsB2[i]);
     }
     free(resultsB1);
