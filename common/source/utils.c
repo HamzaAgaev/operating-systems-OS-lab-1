@@ -2,6 +2,7 @@
 
 #include <pthread.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static bool isRandomInitialized = false;
 
@@ -13,8 +14,8 @@ static void initializeRandom(unsigned int seed) {
 }
 
 void generateRandomString(char *str, int length, unsigned int seed) {
-    const unsigned long seedByThread = (unsigned long)pthread_self() ^ seed;
-    initializeRandom((unsigned int)seedByThread);
+    const unsigned long seedByThreadAndProcess = (unsigned long)pthread_self() ^ seed ^ getpid();
+    initializeRandom((unsigned int)seedByThreadAndProcess);
     const char start = 'a';
     const char end = 'z';
     const int range = end - start + 1;
