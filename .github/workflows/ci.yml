@@ -13,18 +13,18 @@ jobs:
       - name: Install Clang, CMake and Python
         run: |
           sudo apt update
-          sudo apt install -y clang-19 clang-tidy-19 clang-format-19 cmake python3
+          sudo apt install -y clang clang-tidy clang-format cmake python3
 
       - name: Run clang-format
         run: |
           find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -style=file --dry-run --Werror {} +
-#         run "find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -style=file -i {} +" to format code
+      #         run "find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -style=file -i {} +" to format code
 
-#      - name: Run clang-tidy
-#        run: |
-#          mkdir build
-#          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Bbuild -H.
-#          clang-tidy $(find . -name "*.c") --quiet -- -std=23 -p build -header-filter='^$'
+      #      - name: Run clang-tidy
+      #        run: |
+      #          mkdir build
+      #          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Bbuild -H.
+      #          clang-tidy $(find . -name "*.c") --quiet -- -std=23 -p build -header-filter='^$'
 
       - name: Configure and build with CMake
         run: |
