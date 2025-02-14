@@ -3,7 +3,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#define SWAP(a, b, type) \
+#define SWAP(type, a, b) \
     type temp = *(a);    \
     *(a) = *(b);         \
     *(b) = temp;
@@ -64,9 +64,8 @@ void offer(PriorityQueue *pq, FileState value, ErrorCatcher *catcher) {
     int i = pq->size;
     pq->size++;
 
-    // heapify
     while (i != 0 && pq->data[parentIndex(i)].value > pq->data[i].value) {
-        SWAP(&pq->data[parentIndex(i)], &pq->data[i], FileState);
+        SWAP(FileState, &pq->data[parentIndex(i)], &pq->data[i]);
         i = parentIndex(i);
     }
 }
@@ -88,7 +87,6 @@ FileState poll(PriorityQueue *pq, ErrorCatcher *catcher) {
     pq->data[0] = pq->data[pq->size - 1];
     pq->size--;
 
-    // heapify
     int i = 0;
     for (;;) {
         const int left = leftIndex(i);
@@ -104,7 +102,7 @@ FileState poll(PriorityQueue *pq, ErrorCatcher *catcher) {
         if (smallest == i) {
             break;
         }
-        SWAP(&pq->data[i], &pq->data[smallest], FileState);
+        SWAP(FileState, &pq->data[i], &pq->data[smallest]);
         i = smallest;
     }
 
