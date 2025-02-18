@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define B1_TEMP_FILENAME_FORMAT "b1-" TEMP_FILENAME_FORMAT
+#define B1_OUTPUT_FILENAME_FORMAT "b1-" OUTPUT_FILENAME_FORMAT
+
 #define BLOCK_SCALE 16
 
 static int ceilDiv(int a, int b) {
@@ -64,7 +67,7 @@ RunResult benchmark1() {
                 free(fileNames);
                 return (RunResult){"Can't allocate memory.", errno};
             }
-            snprintf(tempFileName, sizeof(tempFileName), TEMP_FILENAME_FORMAT, fileNamePrefix, fileIndex);
+            snprintf(tempFileName, sizeof(tempFileName), B1_TEMP_FILENAME_FORMAT, fileNamePrefix, fileIndex);
             memcpy(fileNames[fileIndex], tempFileName, sizeof(tempFileName));
             FILE *tempFile = fopen(tempFileName, "w");
             if (tempFile == NULL) {
@@ -131,7 +134,7 @@ RunResult benchmark1() {
     }
 
     char outputFileName[MAX_FILENAME_LEN];
-    snprintf(outputFileName, sizeof(outputFileName), OUTPUT_FILENAME_FORMAT, fileNamePrefix);
+    snprintf(outputFileName, sizeof(outputFileName), B1_OUTPUT_FILENAME_FORMAT, fileNamePrefix);
     outputFile = fopen(outputFileName, "w");
     if (outputFile == NULL) {
         for (int i = 0; i < filesCount; i++) {

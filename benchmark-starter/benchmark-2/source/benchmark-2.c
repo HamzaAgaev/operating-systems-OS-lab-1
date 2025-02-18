@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define B2_OUTPUT_FILENAME_FORMAT "b2-" OUTPUT_FILENAME_FORMAT
+
 RunResult benchmark2() {
     FILE *inputFile;
     FILE *outputFile;
@@ -29,7 +31,7 @@ RunResult benchmark2() {
     generateRandomString(fileNamePrefix, GEN_STR_LEN + 1, DEFAULT_SEED);
 
     char outputFileName[MAX_FILENAME_LEN];
-    snprintf(outputFileName, sizeof(outputFileName), OUTPUT_FILENAME_FORMAT, fileNamePrefix);
+    snprintf(outputFileName, sizeof(outputFileName), B2_OUTPUT_FILENAME_FORMAT, fileNamePrefix);
     outputFile = fopen(outputFileName, "w");
     if (outputFile == NULL) {
         free(inputNumbers);
